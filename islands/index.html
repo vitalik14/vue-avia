@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<link rel="icon" href="favicon.ico">
+	<title>Islands</title>
+</head>
+
+<body>
+	<div id="app" class="app"></div>
+</body>
+<style>
+	body {
+		text-align: center;
+	}
+
+	.app {
+		display: inline-block;
+		margin: 0 auto;
+		border: 1px solid #999;
+	}
+
+	.app>div {
+		display: inline-block;
+		text-align: center;
+	}
+
+	.app>div {
+		display: flex;
+		justify-content: center;
+		width: auto;
+	}
+
+	.app>div>div {
+		display: inline-block;
+		width: 40px;
+		height: 30px;
+		color: blue;
+		line-height: 2;
+		cursor: pointer;
+		user-select: none;
+		transition: all 0.2s;
+	}
+
+	.app>div>div:hover {
+		color: #000;
+	}
+
+	.app>div .island {
+		background: #eee;
+		color: green;
+		transition: all 0.2s;
+	}
+
+	.sapp .total-islands {
+		padding: 10px 0;
+		border-top: 1px solid #999;
+	}
+</style>
+<script>
+
+	const island = 1;
+	const world = []; // for manipelation with dinamic matrix
+	const worldStatic = [
+		[0, 1, 1, 0],
+		[1, 1, 1, 1],
+		[0, 0, 0, 0],
+		[1, 1, 1, 0],
+		[0, 0, 0, 1]
+	];
+
+	//recursion
+	let checkIslands = function (n, m) {
+		(this[n][m] === island) && (this[n][m] = 0);
+
+		(this[n][m + 1] === island) && checkIslands(n, m + 1);
+
+		(this[n][m - 1] === island) && checkIslands(n, m - 1);
+
+		(n > 0 && this[n - 1][m] === island) && checkIslands(n - 1, m);
+
+		(n < this.length - 1 && this[n + 1][m] === island) && checkIslands(n + 1, m);
+	}
+	checkIslands = checkIslands.bind(world);
+
+	const main = () => {
+		let islandsCount = 0;
+
+		worldStatic.forEach(line => {
+			world.push(line.slice());
+		});
+
+		world.forEach((arrMatrixline, numLine) => {
+			arrMatrixline.forEach((el, numColumn) => {
+				if (el === island) {
+					++islandsCount;
+					checkIslands(numLine, numColumn);
+				}
+			});
+		});
+
+		return islandsCount;
+	}
+	//////////////////////////////////
+	// code for visualization in dom
+	//////////////////////////////////
+	const app = document.getElementById('app');
+	const totalIslands = document.createElement('div');
+
+	for (let i = 0; i < worldStatic.length; i++) {
+		const line = document.createElement('div');
+
+		app.appendChild(line);
+
+		for (let n = 0; n < worldStatic[i].length; n++) {
+			const elem = document.createElement('div');
+
+			elem.innerHTML = worldStatic[i][n];
+			elem.classList.add(`item`);
+			elem.classList.add(`_${i}_${n}`);
+
+			if (worldStatic[i][n] === 1) {
+				elem.classList.add('island');
+			}
+
+			line.appendChild(elem);
+		}
+	}
+	totalIslands.classList.add('total-islands');
+	totalIslands.innerHTML = main() + ' - шт';
+	app.appendChild(totalIslands);
+
+	app.addEventListener('click', e => {
+		const item = e.target;
+		let coordinates, checkCoordinates;
+
+		if (item.classList.contains('item')) {
+			item.classList.forEach(elClass => {
+				checkCoordinates = elClass.split('_');
+
+				if (checkCoordinates.length > 2) {
+					coordinates = checkCoordinates;
+				}
+			});
+
+			if (item.innerHTML == '0') {
+				item.innerHTML = worldStatic[coordinates[1]][coordinates[2]] = 1;
+			} else {
+				item.innerHTML = worldStatic[coordinates[1]][coordinates[2]] = 0;
+			}
+
+			item.classList.toggle('island');
+		}
+
+		totalIslands.innerHTML = main() + ' - шт';
+
+	}, false);
+
+</script>
+
+</html>
