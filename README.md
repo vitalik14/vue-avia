@@ -1,6 +1,6 @@
 # vue-avia
 
-## Project setup
+### Project setup
 ```
 npm install
 ```
@@ -15,15 +15,15 @@ npm run build
 ### Lints and fixes files
 npm run lint
 
-### ЗАДАНИЕ 1
+## ЗАДАНИЕ 1
 
 ### start project
 node server
 ### for chrome disable-web-security
 chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
 
-### ЗАДАНИЕ 2
+## ЗАДАНИЕ 2
 
-## use path local
+### use path local
 /islands  index.html
 
